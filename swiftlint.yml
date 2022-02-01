@@ -1,0 +1,153 @@
+# 官方提供的規則：https://realm.github.io/SwiftLint/rule-directory.html
+
+# 不啟用的規則
+disabled_rules:
+  - control_statement
+  - redundant_optional_initialization
+  - trailing_whitespace
+  - opening_brace
+  - file_length
+  - type_body_length
+  - function_body_length
+  - line_length
+  - force_cast
+  - force_try
+  - attributes
+  - trailing_newline
+  - legacy_constructor
+  - switch_case_alignment
+  - return_arrow_whitespace
+  - closure_parameter_position
+  - redundant_set_access_control
+  - notification_center_detachment
+  - empty_parentheses_with_trailing_closure
+  - vertical_whitespace
+  - statement_position
+  - function_parameter_count
+  - unused_closure_parameter
+  - empty_enum_arguments
+  - unused_enumerated
+  - todo
+  - void_return
+  - private_over_fileprivate
+  - large_tuple
+  - nesting
+  
+# 啟用的規則
+opt_in_rules:
+  - identifier_name # 變數名稱規則，此規則可小駝峰、全大寫和底線式，需要客製化規則輔助
+  - type_name # 型別名稱規則(class,struct,enum,protocol....)，此規則為大駝峰
+  - trailing_semicolon #禁止分號(;)
+  - weak_delegate #weak必搭delegate
+  - implicit_getter #只需要Get的屬性禁止寫Get、使用上Get和Set必同時出現
+  - modifier_order #修飾詞排序
+  - trailing_closure #單一Closure當結尾參數時，使用TrailingClosure
+  - colon #冒號(:)-左邊不留空、右邊留空
+  - comma #逗號(,)-左邊不留空、右邊留空
+  - syntactic_sugar #陣列、字典、Optional用語法糖
+
+# 客製化的規則
+custom_rules:
+  identifier_name_dont_only_capital:
+    name: "Identifier Name Don't Only Capital"
+    regex: "(^[a-zA-Z ]*(?:var|let|func) ((?!URL)[A-Z]+)[:( ]+)"
+    message: "禁止全大寫"
+    severity: error
+  identifier_name_dont_use_bottomLine:
+    name: "Identifier Name Don't Use BottomLine"
+    regex: "(^[a-zA-Z ]*(?:protocol|extension|class|struct|enum|var|let|func) _+[a-zA-Z0-9]+)"
+    message: "禁止底線式"
+    severity: error
+  dont_use_internal:
+    name: "Don't Use Internal"
+    regex: "([ ]*internal )"
+    message: "禁止使用internal當修飾詞(不寫internal即可)"
+    severity: error
+  ternary_operator_with_left_space:
+    name: "Ternary Operator With Left Space"
+    regex: ' \? [A-Za-z0-9()]+\:[ ]*[A-Za-z0-9()]+'
+    message: "三元判斷式冒號的左邊需要空白"
+    severity: error
+  ternary_operator_with_right_space:
+    name: "Ternary Operator With Right Space"
+    regex: ' \? [A-Za-z0-9()]+[ ]*\:[A-Za-z0-9()]+'
+    message: "三元判斷式冒號的右邊需要空白"
+    severity: error
+    
+# 原本是warning，要改成error
+weak_delegate: error
+trailing_closure: 
+  severity: error
+colon: 
+  severity: error
+comma:
+  severity: error
+implicit_getter:
+  severity: error
+trailing_semicolon:
+  severity: error
+mark:
+  severity: error
+
+# 方法內的判斷式複雜度(任何if或switch中每個case都算)
+# 做了30以上的判斷:警告
+# 做了100以上的判斷:錯誤
+cyclomatic_complexity:
+  warning: 30
+  error: 100
+
+# 修飾詞排序
+modifier_order:
+  preferred_modifier_order:
+    - acl # public...
+    - setterACL # private(set)...
+    - override
+    - dynamic
+    - mutators # mutating
+    - lazy
+    - final
+    - required
+    - convenience
+    - typeMethods # static...
+    - owned # weak...
+  severity: error
+
+# 型別名稱規則(class,struct,enum,protocol....)，此規則為大駝峰
+type_name:
+  min_length:
+    warning: 0
+    error: 0
+  max_length:
+    warning: 100
+    error: 100
+
+# 變數名稱規則，此規則可小駝峰、全大寫和底線式，需要客製化規則輔助
+identifier_name:
+  min_length:
+    warning: 0
+    error: 0
+  max_length:
+    warning: 100
+    error: 100
+  excluded: # 例外
+    - T # 泛型會用到
+    - Error # CMoneyResponseBase物件的屬性
+    - Success # Result<T>的列舉
+    - Code # CMoneyError的屬性
+    - Message # CMoneyError的屬性
+    - URL # URL為通用簡寫
+
+# 執行linting包含的路徑
+included:
+  - ${SRCROOT}
+
+# 執行linting忽略的路徑(優先度大於included)
+excluded:
+  - Pods
+
+# 似乎是試驗性質的分析器(目前不用管他...)
+analyzer_rules:
+  - explicit_self
+
+# 報錯類型 (xcode, json, csv, checkstyle, junit, html, emoji, sonarqube, markdown)
+reporter: "xcode"
